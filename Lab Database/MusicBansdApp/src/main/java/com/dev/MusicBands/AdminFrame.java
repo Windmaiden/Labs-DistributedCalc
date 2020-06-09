@@ -1,0 +1,1301 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.dev.MusicBands;
+
+import com.dev.MusicBands.entity.Album;
+import com.dev.MusicBands.entity.Ganres;
+import com.dev.MusicBands.entity.GroupMusic;
+import com.dev.MusicBands.entity.Song;
+import com.dev.MusicBands.model.AlbumModel;
+import com.dev.MusicBands.model.GanresModel;
+import com.dev.MusicBands.model.GroupMusicModel;
+import com.dev.MusicBands.model.SongModel;
+import com.dev.MusicBands.service.AdminService;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.WARNING_MESSAGE;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import org.springframework.context.annotation.Import;
+import org.springframework.stereotype.Component;
+
+/**
+ *
+ * @author Root
+ */
+@Component
+@Import(value = AdminService.class)
+public class AdminFrame extends javax.swing.JFrame {
+    AdminService service;
+    /**
+     * Creates new form AdminFrame
+     */
+    
+    public AdminFrame(AdminService grRepos) {
+        this.service = grRepos;
+        List<Ganres> ganres = service.findGanres();
+        ganres.sort(Comparator.comparing(Ganres::getName));
+        ganreModel = new GanresModel(ganres);
+        grList = grRepos.findAllGroupMusic(grPage, onPage);
+        albList = new ArrayList<>();
+        albCurrent = null;
+        grModel = new GroupMusicModel(grList);
+        albModel = new AlbumModel(albList);
+        songList=new ArrayList<>();
+        songModel = new SongModel(songList);
+        initComponents();
+        tGroup.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+                // do some actions here, for example
+                // print first column value from selected row
+                int row = tGroup.getSelectedRow();
+                if (row >= 0) {
+                    grCurrent = (GroupMusic) tGroup.getModel().getValueAt(row, 100);
+                    bindGroup(grCurrent);
+                }
+            }
+        });
+        tAlbum.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+                // do some actions here, for example
+                // print first column value from selected row
+                int row = tAlbum.getSelectedRow();
+                if (row >= 0) {
+                    albCurrent = (Album) tAlbum.getModel().getValueAt(row, 100);
+                    songCurrent = null;
+                    if (albCurrent != null) {
+                        setTitle(String.format("Група %s, Альбом %s", grCurrent.getName(), albCurrent.getName()));
+                        songList = albCurrent.getSongs().stream().collect(Collectors.toList());
+                        songCurrent = null;
+                        updateSongTable();
+                        
+                    } else {
+                        songList = new ArrayList<>();
+                        setTitle(String.format("Група %s", grCurrent.getName()));
+                        songList = new ArrayList<>();
+                        songCurrent = null;
+                        updateSongTable();
+                    }
+
+                    bindAlbum(albCurrent);
+                }
+            }
+        });
+        
+        tSong.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+                // do some actions here, for example
+                // print first column value from selected row
+                int row = tSong.getSelectedRow();
+                if (row >= 0) {
+                    songCurrent = (Song) tSong.getModel().getValueAt(row, 100);
+                    if (songCurrent != null) {
+                        setTitle(String.format("Група %s, Альбом %s, Пісня %s", grCurrent.getName(), albCurrent.getName(),songCurrent.getName()));
+                        
+                    } else {
+                       
+                        songCurrent = null;
+
+                    }
+                   bindSong(songCurrent);
+                }
+            }
+        });
+        
+        
+
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        pGroup = new javax.swing.JPanel();
+        pGrInfo = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        btNewGroup = new javax.swing.JButton();
+        btSaveGroup = new javax.swing.JButton();
+        btDelGroup = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        grName = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        grDesc = new javax.swing.JTextPane();
+        pPhotoGr = new javax.swing.JPanel();
+        pPhotoButton = new javax.swing.JPanel();
+        btloadImage = new javax.swing.JButton();
+        btDelImage = new javax.swing.JButton();
+        grPhoto = new javax.swing.JLabel();
+        pGrTable = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tGroup = new javax.swing.JTable();
+        jPanel9 = new javax.swing.JPanel();
+        grPageNum = new javax.swing.JLabel();
+        grNext = new javax.swing.JButton();
+        grPrev = new javax.swing.JButton();
+        pAlbum = new javax.swing.JPanel();
+        pGrInfo1 = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        btNewAlbum = new javax.swing.JButton();
+        btSaveAlbum = new javax.swing.JButton();
+        btDelAlbum = new javax.swing.JButton();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        albName = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        albDesc = new javax.swing.JTextPane();
+        pPhotoGr1 = new javax.swing.JPanel();
+        pPhotoButton1 = new javax.swing.JPanel();
+        btLoadImageAlb = new javax.swing.JButton();
+        btDelImageAlb = new javax.swing.JButton();
+        albPhoto = new javax.swing.JLabel();
+        pGrTable1 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tAlbum = new javax.swing.JTable();
+        pSong = new javax.swing.JPanel();
+        pGrInfo2 = new javax.swing.JPanel();
+        jButton3 = new javax.swing.JButton();
+        jPanel8 = new javax.swing.JPanel();
+        btNewSong = new javax.swing.JButton();
+        btSaveSong = new javax.swing.JButton();
+        btDelSong = new javax.swing.JButton();
+        jPanel10 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        songName = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        songYear = new javax.swing.JTextField();
+        songGanre = new javax.swing.JComboBox<>();
+        pPhotoGr2 = new javax.swing.JPanel();
+        pPhotoButton2 = new javax.swing.JPanel();
+        btLoadImageAlb1 = new javax.swing.JButton();
+        btDelImageAlb1 = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        btPlay = new javax.swing.JButton();
+        btStop = new javax.swing.JButton();
+        songFile = new javax.swing.JLabel();
+        pGrTable2 = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        tSong = new javax.swing.JTable();
+
+        jTabbedPane1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+
+        pGroup.setLayout(new java.awt.BorderLayout());
+
+        pGrInfo.setPreferredSize(new java.awt.Dimension(400, 488));
+        pGrInfo.setLayout(new java.awt.BorderLayout());
+
+        jButton1.setText("Зберегти");
+        pGrInfo.add(jButton1, java.awt.BorderLayout.CENTER);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jPanel1.setMinimumSize(new java.awt.Dimension(100, 50));
+        jPanel1.setPreferredSize(new java.awt.Dimension(400, 50));
+
+        btNewGroup.setText("Нова");
+        btNewGroup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btNewGroupActionPerformed(evt);
+            }
+        });
+
+        btSaveGroup.setText("Зберегти");
+        btSaveGroup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btSaveGroupActionPerformed(evt);
+            }
+        });
+
+        btDelGroup.setText("Видалити");
+        btDelGroup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btDelGroupActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(92, 92, 92)
+                .addComponent(btNewGroup)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btSaveGroup)
+                .addGap(18, 18, 18)
+                .addComponent(btDelGroup, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btNewGroup)
+                    .addComponent(btSaveGroup)
+                    .addComponent(btDelGroup))
+                .addGap(9, 9, 9))
+        );
+
+        pGrInfo.add(jPanel1, java.awt.BorderLayout.PAGE_END);
+
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Інфо", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14))); // NOI18N
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel1.setText("Назва");
+
+        grName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel2.setText("Опис");
+
+        grDesc.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jScrollPane1.setViewportView(grDesc);
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addGap(31, 31, 31)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(grName)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(grName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)))
+        );
+
+        pGrInfo.add(jPanel5, java.awt.BorderLayout.PAGE_START);
+
+        pPhotoGr.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        pPhotoGr.setToolTipText("Фото");
+        pPhotoGr.setMaximumSize(new java.awt.Dimension(400, 400));
+        pPhotoGr.setMinimumSize(new java.awt.Dimension(400, 400));
+        pPhotoGr.setPreferredSize(new java.awt.Dimension(400, 400));
+        pPhotoGr.setLayout(new java.awt.BorderLayout());
+
+        pPhotoButton.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        pPhotoButton.setMaximumSize(new java.awt.Dimension(400, 30));
+        pPhotoButton.setMinimumSize(new java.awt.Dimension(400, 30));
+        pPhotoButton.setPreferredSize(new java.awt.Dimension(400, 30));
+        pPhotoButton.setLayout(new java.awt.GridLayout(1, 0));
+
+        btloadImage.setText("Завантажити");
+        btloadImage.setAlignmentX(0.5F);
+        btloadImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btloadImageActionPerformed(evt);
+            }
+        });
+        pPhotoButton.add(btloadImage);
+
+        btDelImage.setText("Видалити");
+        btDelImage.setAlignmentX(0.5F);
+        btDelImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btDelImageActionPerformed(evt);
+            }
+        });
+        pPhotoButton.add(btDelImage);
+
+        pPhotoGr.add(pPhotoButton, java.awt.BorderLayout.PAGE_END);
+        pPhotoGr.add(grPhoto, java.awt.BorderLayout.CENTER);
+
+        pGrInfo.add(pPhotoGr, java.awt.BorderLayout.CENTER);
+
+        pGroup.add(pGrInfo, java.awt.BorderLayout.LINE_START);
+
+        pGrTable.setLayout(new java.awt.BorderLayout());
+
+        tGroup.setAutoCreateRowSorter(true);
+        tGroup.setModel(grModel);
+        tGroup.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane2.setViewportView(tGroup);
+
+        pGrTable.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+
+        jPanel9.setMinimumSize(new java.awt.Dimension(100, 50));
+        jPanel9.setPreferredSize(new java.awt.Dimension(627, 50));
+
+        grPageNum.setText("1");
+
+        grNext.setText("Далі");
+        grNext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                grNextActionPerformed(evt);
+            }
+        });
+
+        grPrev.setText("Назад");
+        grPrev.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                grPrevActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addContainerGap(254, Short.MAX_VALUE)
+                .addComponent(grPrev)
+                .addGap(18, 18, 18)
+                .addComponent(grPageNum)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(grNext)
+                .addGap(197, 197, 197))
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(grPageNum)
+                    .addComponent(grNext)
+                    .addComponent(grPrev))
+                .addContainerGap(11, Short.MAX_VALUE))
+        );
+
+        pGrTable.add(jPanel9, java.awt.BorderLayout.PAGE_END);
+
+        pGroup.add(pGrTable, java.awt.BorderLayout.CENTER);
+
+        jTabbedPane1.addTab("Групи", pGroup);
+
+        pAlbum.setLayout(new java.awt.BorderLayout());
+
+        pGrInfo1.setPreferredSize(new java.awt.Dimension(400, 488));
+        pGrInfo1.setLayout(new java.awt.BorderLayout());
+
+        jButton2.setText("Зберегти");
+        pGrInfo1.add(jButton2, java.awt.BorderLayout.CENTER);
+
+        jPanel6.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jPanel6.setMinimumSize(new java.awt.Dimension(100, 50));
+        jPanel6.setPreferredSize(new java.awt.Dimension(400, 50));
+
+        btNewAlbum.setText("Новий");
+        btNewAlbum.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btNewAlbumActionPerformed(evt);
+            }
+        });
+
+        btSaveAlbum.setText("Зберегти");
+        btSaveAlbum.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btSaveAlbumActionPerformed(evt);
+            }
+        });
+
+        btDelAlbum.setText("Видалити");
+        btDelAlbum.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btDelAlbumActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(92, 92, 92)
+                .addComponent(btNewAlbum)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btSaveAlbum)
+                .addGap(18, 18, 18)
+                .addComponent(btDelAlbum, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btNewAlbum)
+                    .addComponent(btSaveAlbum)
+                    .addComponent(btDelAlbum))
+                .addGap(9, 9, 9))
+        );
+
+        pGrInfo1.add(jPanel6, java.awt.BorderLayout.PAGE_END);
+
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Інфо", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14))); // NOI18N
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel3.setText("Назва");
+
+        albName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel4.setText("Опис");
+
+        albDesc.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jScrollPane3.setViewportView(albDesc);
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4))
+                .addGap(31, 31, 31)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(albName)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(albName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)))
+        );
+
+        pGrInfo1.add(jPanel7, java.awt.BorderLayout.PAGE_START);
+
+        pPhotoGr1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        pPhotoGr1.setToolTipText("Фото");
+        pPhotoGr1.setMaximumSize(new java.awt.Dimension(400, 400));
+        pPhotoGr1.setMinimumSize(new java.awt.Dimension(400, 400));
+        pPhotoGr1.setPreferredSize(new java.awt.Dimension(400, 400));
+        pPhotoGr1.setLayout(new java.awt.BorderLayout());
+
+        pPhotoButton1.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        pPhotoButton1.setMaximumSize(new java.awt.Dimension(400, 30));
+        pPhotoButton1.setMinimumSize(new java.awt.Dimension(400, 30));
+        pPhotoButton1.setPreferredSize(new java.awt.Dimension(400, 30));
+        pPhotoButton1.setLayout(new java.awt.GridLayout(1, 0));
+
+        btLoadImageAlb.setText("Завантажити");
+        btLoadImageAlb.setAlignmentX(0.5F);
+        btLoadImageAlb.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btLoadImageAlbActionPerformed(evt);
+            }
+        });
+        pPhotoButton1.add(btLoadImageAlb);
+
+        btDelImageAlb.setText("Видалити");
+        btDelImageAlb.setAlignmentX(0.5F);
+        btDelImageAlb.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btDelImageAlbActionPerformed(evt);
+            }
+        });
+        pPhotoButton1.add(btDelImageAlb);
+
+        pPhotoGr1.add(pPhotoButton1, java.awt.BorderLayout.PAGE_END);
+        pPhotoGr1.add(albPhoto, java.awt.BorderLayout.CENTER);
+
+        pGrInfo1.add(pPhotoGr1, java.awt.BorderLayout.CENTER);
+
+        pAlbum.add(pGrInfo1, java.awt.BorderLayout.LINE_START);
+
+        pGrTable1.setLayout(new java.awt.BorderLayout());
+
+        tAlbum.setAutoCreateRowSorter(true);
+        tAlbum.setModel(albModel);
+        jScrollPane4.setViewportView(tAlbum);
+
+        pGrTable1.add(jScrollPane4, java.awt.BorderLayout.CENTER);
+
+        pAlbum.add(pGrTable1, java.awt.BorderLayout.CENTER);
+
+        jTabbedPane1.addTab("Альбоми", pAlbum);
+
+        pSong.setLayout(new java.awt.BorderLayout());
+
+        pGrInfo2.setPreferredSize(new java.awt.Dimension(400, 488));
+        pGrInfo2.setLayout(new java.awt.BorderLayout());
+
+        jButton3.setText("Зберегти");
+        pGrInfo2.add(jButton3, java.awt.BorderLayout.CENTER);
+
+        jPanel8.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jPanel8.setMinimumSize(new java.awt.Dimension(100, 50));
+        jPanel8.setPreferredSize(new java.awt.Dimension(400, 50));
+
+        btNewSong.setText("Нова");
+        btNewSong.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btNewSongActionPerformed(evt);
+            }
+        });
+
+        btSaveSong.setText("Зберегти");
+        btSaveSong.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btSaveSongActionPerformed(evt);
+            }
+        });
+
+        btDelSong.setText("Видалити");
+        btDelSong.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btDelSongActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(92, 92, 92)
+                .addComponent(btNewSong)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btSaveSong)
+                .addGap(18, 18, 18)
+                .addComponent(btDelSong, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btNewSong)
+                    .addComponent(btSaveSong)
+                    .addComponent(btDelSong))
+                .addGap(9, 9, 9))
+        );
+
+        pGrInfo2.add(jPanel8, java.awt.BorderLayout.PAGE_END);
+
+        jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Інфо", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14))); // NOI18N
+        jPanel10.setPreferredSize(new java.awt.Dimension(400, 150));
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel5.setText("Назва");
+
+        songName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel6.setText("Жанр");
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel7.setText("Рік");
+
+        songYear.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+
+        songGanre.setModel(ganreModel);
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(songName)
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(songYear, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 238, Short.MAX_VALUE))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(songGanre, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(songName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(songYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(songGanre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 96, Short.MAX_VALUE))
+        );
+
+        pGrInfo2.add(jPanel10, java.awt.BorderLayout.PAGE_START);
+
+        pPhotoGr2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        pPhotoGr2.setToolTipText("Фото");
+        pPhotoGr2.setMaximumSize(new java.awt.Dimension(400, 400));
+        pPhotoGr2.setMinimumSize(new java.awt.Dimension(400, 400));
+        pPhotoGr2.setPreferredSize(new java.awt.Dimension(400, 400));
+        pPhotoGr2.setLayout(new java.awt.BorderLayout());
+
+        pPhotoButton2.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        pPhotoButton2.setMaximumSize(new java.awt.Dimension(400, 30));
+        pPhotoButton2.setMinimumSize(new java.awt.Dimension(400, 30));
+        pPhotoButton2.setPreferredSize(new java.awt.Dimension(400, 30));
+        pPhotoButton2.setLayout(new java.awt.GridLayout(1, 0));
+
+        btLoadImageAlb1.setText("Завантажити");
+        btLoadImageAlb1.setAlignmentX(0.5F);
+        btLoadImageAlb1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btLoadImageAlb1ActionPerformed(evt);
+            }
+        });
+        pPhotoButton2.add(btLoadImageAlb1);
+
+        btDelImageAlb1.setText("Видалити");
+        btDelImageAlb1.setAlignmentX(0.5F);
+        btDelImageAlb1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btDelImageAlb1ActionPerformed(evt);
+            }
+        });
+        pPhotoButton2.add(btDelImageAlb1);
+
+        pPhotoGr2.add(pPhotoButton2, java.awt.BorderLayout.PAGE_END);
+
+        jPanel2.setPreferredSize(new java.awt.Dimension(400, 300));
+        jPanel2.setLayout(new java.awt.BorderLayout());
+
+        btPlay.setText("Play");
+
+        btStop.setText("Stop");
+
+        songFile.setMaximumSize(new java.awt.Dimension(200, 14));
+        songFile.setMinimumSize(new java.awt.Dimension(200, 14));
+        songFile.setPreferredSize(new java.awt.Dimension(200, 14));
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(68, 68, 68)
+                .addComponent(btPlay, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btStop, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(46, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(songFile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addComponent(songFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btPlay)
+                    .addComponent(btStop))
+                .addContainerGap(240, Short.MAX_VALUE))
+        );
+
+        jPanel2.add(jPanel3, java.awt.BorderLayout.CENTER);
+
+        pPhotoGr2.add(jPanel2, java.awt.BorderLayout.CENTER);
+
+        pGrInfo2.add(pPhotoGr2, java.awt.BorderLayout.CENTER);
+
+        pSong.add(pGrInfo2, java.awt.BorderLayout.LINE_START);
+
+        pGrTable2.setLayout(new java.awt.BorderLayout());
+
+        tSong.setAutoCreateRowSorter(true);
+        tSong.setModel(songModel);
+        jScrollPane6.setViewportView(tSong);
+
+        pGrTable2.add(jScrollPane6, java.awt.BorderLayout.CENTER);
+
+        pSong.add(pGrTable2, java.awt.BorderLayout.CENTER);
+
+        jTabbedPane1.addTab("Пісні", pSong);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1008, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTabbedPane1)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btDelImageAlbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDelImageAlbActionPerformed
+        // TODO add your handling code here:
+        albPhoto.setIcon(null);
+        albPhoto.setText("");
+        albCurrent.setPoster("");
+    }//GEN-LAST:event_btDelImageAlbActionPerformed
+
+    private void btLoadImageAlbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLoadImageAlbActionPerformed
+        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String dst = service.copyFilePoster(selectedFile);
+            if (dst != null) {
+                setImageAlbum(dst);
+            }
+        }
+    }//GEN-LAST:event_btLoadImageAlbActionPerformed
+
+    private void btDelAlbumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDelAlbumActionPerformed
+        // TODO add your handling code here:
+        if (albCurrent == null) {
+            return;
+        }
+        if (albCurrent.getSongs().size() > 0) {
+            JOptionPane.showMessageDialog(null, "Видалення не можливе, в альбомі  є пісні!", "Увага!", WARNING_MESSAGE);
+            return;
+        }
+        service.delAlbum(albCurrent);
+        String uuid = grCurrent.getUuid();
+        loadGroupMusics();
+        grCurrent = grList.stream().filter(g -> g.getUuid().equals(uuid)).findFirst().get();
+        albList = grCurrent.getAlbums().stream().collect(Collectors.toList());
+        updateAlbumTable();
+        albCurrent = null;
+        bindAlbum(albCurrent);
+
+    }//GEN-LAST:event_btDelAlbumActionPerformed
+
+    private void btSaveAlbumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSaveAlbumActionPerformed
+        // TODO add your handling code here:
+        if (grCurrent == null) {
+            JOptionPane.showMessageDialog(null, "Спочатку оберіть групу!", "Увага!", WARNING_MESSAGE);
+            return;
+        }
+        if (albName.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Введіть назву альбому!", "Увага!", WARNING_MESSAGE);
+            return;
+        }
+        if (albCurrent == null) {
+            albCurrent = new Album();
+            albCurrent.setGroup(grCurrent);
+        }
+        String uuid = grCurrent.getUuid();
+        albCurrent.setName(albName.getText());
+        albCurrent.setDescription(albDesc.getText());
+        String poster = albPhoto.getText();
+        albCurrent.setPoster(poster);
+        Album alb = service.saveAlbum(albCurrent);
+        loadGroupMusics();
+        grCurrent = grList.stream().filter(g -> g.getUuid().equals(uuid)).findFirst().get();
+        albList = grCurrent.getAlbums().stream().collect(Collectors.toList());
+        updateAlbumTable();
+        albCurrent = alb;
+        bindAlbum(albCurrent);
+    }//GEN-LAST:event_btSaveAlbumActionPerformed
+
+    private void btNewAlbumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btNewAlbumActionPerformed
+        // TODO add your handling code here:
+        albCurrent = new Album();
+        albCurrent.setGroup(grCurrent);
+        bindAlbum(albCurrent);
+    }//GEN-LAST:event_btNewAlbumActionPerformed
+
+    private void grPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_grPrevActionPerformed
+        // TODO add your handling code here:
+        if (grPage > 0) {
+            grPage--;
+            loadGroupMusics();
+            grModel.fireTableDataChanged();
+            grPageNum.setText(String.format("%d", grPage + 1));
+            grCurrent = new GroupMusic();
+            bindGroup(grCurrent);
+
+        }
+
+    }//GEN-LAST:event_grPrevActionPerformed
+
+    private void grNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_grNextActionPerformed
+        // TODO add your handling code here:
+        grPage++;
+        boolean res = loadGroupMusics();
+        if (!res) {
+            grPage--;
+        }
+    }//GEN-LAST:event_grNextActionPerformed
+
+    private void btDelImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDelImageActionPerformed
+        // TODO add your handling code here:
+        grPhoto.setIcon(null);
+        grPhoto.setText("");
+        grCurrent.setPoster("");
+    }//GEN-LAST:event_btDelImageActionPerformed
+
+    private void btloadImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btloadImageActionPerformed
+        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String dst = service.copyFilePoster(selectedFile);
+            if (dst != null) {
+                setImageGroup(dst);
+            }
+        }
+    }//GEN-LAST:event_btloadImageActionPerformed
+
+    private void btDelGroupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDelGroupActionPerformed
+        // TODO add your handling code here:
+        if (grCurrent == null) {
+            return;
+        }
+        if (grCurrent.getAlbums().size() > 0) {
+            JOptionPane.showMessageDialog(null, "Видалення не можливе, в групи є альбоми!", "Увага!", WARNING_MESSAGE);
+            return;
+        }
+        service.delGroup(grCurrent);
+        grCurrent = null;
+        bindGroup(grCurrent);
+        loadGroupMusics();
+    }//GEN-LAST:event_btDelGroupActionPerformed
+
+    private void btSaveGroupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSaveGroupActionPerformed
+
+        if (grName.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Назва не може бути пустою!", "Помилка!", WARNING_MESSAGE);
+            return;
+        }
+
+        if (grCurrent == null) {
+            grCurrent = new GroupMusic();
+        }
+
+        grCurrent.setName(grName.getText());
+        grCurrent.setDescription(grDesc.getText());
+        String poster = grPhoto.getText();
+        grCurrent.setPoster(poster);
+
+        grCurrent = service.saveGroup(grCurrent);
+        bindGroup(grCurrent);
+
+        if (grCurrent != null) {
+            loadGroupMusics();
+        };
+    }//GEN-LAST:event_btSaveGroupActionPerformed
+
+    private void btNewGroupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btNewGroupActionPerformed
+        // TODO add your handling code here:
+        grCurrent = new GroupMusic();
+        bindGroup(grCurrent);
+
+    }//GEN-LAST:event_btNewGroupActionPerformed
+
+    private void btNewSongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btNewSongActionPerformed
+        // TODO add your handling code here:
+        songCurrent = null;
+        bindSong(songCurrent);
+    }//GEN-LAST:event_btNewSongActionPerformed
+
+    private void btSaveSongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSaveSongActionPerformed
+        // TODO add your handling code here:
+        if (albCurrent==null) {
+            JOptionPane.showMessageDialog(null, "Спочатку оберіть альбом!", "Увага!", WARNING_MESSAGE);
+            return;
+        }
+        String name = songName.getText();
+        if (name.isEmpty()){
+             JOptionPane.showMessageDialog(null, "Назва не може бути пустою!", "Увага!", WARNING_MESSAGE);
+            return;
+        }
+        int year = 0;
+        try{
+        year = Integer.parseInt(songYear.getText());}
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Некоректний рік!", "Увага!", WARNING_MESSAGE);
+            return;
+        }
+        String file = songFile.getText();
+        if (file.isEmpty()){
+            JOptionPane.showMessageDialog(null, "Завантажте файл!", "Увага!", WARNING_MESSAGE);
+            return;
+        }
+        Ganres ganre =    (Ganres) songGanre.getSelectedItem();
+        if (ganre==null){
+           JOptionPane.showMessageDialog(null, "Завантажте файл!", "Увага!", WARNING_MESSAGE);
+           return;
+        }
+        if (songCurrent==null){ songCurrent = new Song();songCurrent.setAlbum(albCurrent);}
+        songCurrent.setName(name);
+        songCurrent.setFileName(file);
+        songCurrent.setGanre(ganre);
+        songCurrent.setSongYear(year);
+        songCurrent = service.saveSong(songCurrent);
+        
+        String guuid = grCurrent.getUuid();
+        String auuid = albCurrent.getUuid();
+        
+        loadGroupMusics();
+        grCurrent = grList.stream().filter(g -> g.getUuid().equals(guuid)).findFirst().get();
+        albList =  grCurrent.getAlbums().stream().collect(Collectors.toList());
+        updateAlbumTable();
+
+        bindAlbum(albCurrent);
+        albCurrent = albList.stream().filter(a->a.getUuid().equals(auuid)).findFirst().get();
+        songList = albCurrent.getSongs().stream().collect(Collectors.toList());
+        updateSongTable();
+        bindSong(songCurrent);
+        
+        
+    }//GEN-LAST:event_btSaveSongActionPerformed
+
+    private void btDelSongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDelSongActionPerformed
+        // TODO add your handling code here:
+         if (songCurrent == null) {
+            return;
+        }
+        
+        service.delSong(songCurrent);
+        String guuid = grCurrent.getUuid();
+        String auuid = albCurrent.getUuid();
+        
+        loadGroupMusics();
+        grCurrent = grList.stream().filter(g -> g.getUuid().equals(guuid)).findFirst().get();
+        albList =  grCurrent.getAlbums().stream().collect(Collectors.toList());
+        updateAlbumTable();
+
+        bindAlbum(albCurrent);
+        albCurrent = albList.stream().filter(a->a.getUuid().equals(auuid)).findFirst().get();
+        songList = albCurrent.getSongs().stream().collect(Collectors.toList());
+        updateSongTable();
+        bindSong(songCurrent);
+        
+    }//GEN-LAST:event_btDelSongActionPerformed
+
+    private void btLoadImageAlb1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLoadImageAlb1ActionPerformed
+        // TODO add your handling code here:
+         // TODO add your handling code here:
+         
+         if (albCurrent==null) {
+            JOptionPane.showMessageDialog(null, "Спочатку оберіть альбом!", "Увага!", WARNING_MESSAGE);
+            return;
+            
+        } 
+         
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String dst = service.copyFileMusic(selectedFile);
+            if (dst != null) {
+                songFile.setText(dst);
+            }
+        }
+    }//GEN-LAST:event_btLoadImageAlb1ActionPerformed
+
+    private void btDelImageAlb1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDelImageAlb1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btDelImageAlb1ActionPerformed
+
+    private boolean loadGroupMusics() {
+        List<GroupMusic> list = service.findAllGroupMusic(grPage, onPage);
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        grList = list;
+
+        grModel.update(list);
+        grModel.fireTableDataChanged();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                tGroup.repaint();
+            }
+        });
+        albCurrent = null;
+        bindAlbum(albCurrent);
+        albList = new ArrayList<>();
+        updateAlbumTable();
+        return list.size() > 0 ? true : false;
+    }
+
+    private void bindAlbum(Album alb) {
+        if (alb == null) {
+            albName.setText("");
+            albDesc.setText("");
+            albPhoto.setText("");
+            albPhoto.setIcon(null);
+        } else {
+            albName.setText(alb.getName());
+            albDesc.setText(alb.getDescription());
+            albPhoto.setText(alb.getPoster());
+            setImageAlbum(alb.getPoster());
+        }
+    }
+    
+    private void bindSong(Song song) {
+        if (song == null) {
+            songName.setText("");
+            songYear.setText("");
+            songFile.setText("");
+            songGanre.setSelectedItem(null);
+        } else {
+            songName.setText(song.getName());
+            songYear.setText(Integer.toString(song.getSongYear()));
+            songFile.setText(song.getFileName());
+            songGanre.setSelectedItem(song.getGanre());
+        }
+    }
+
+    private void bindGroup(GroupMusic gr) {
+        if (gr == null) {
+            setTitle("Нова група");
+            grName.setText("");
+            grDesc.setText("");
+            grPhoto.setText("");
+            grPhoto.setIcon(null);
+            albList = new ArrayList<>();
+
+            return;
+        } else {
+            setTitle(String.format("Група %s", gr.getName()));
+            grName.setText(gr.getName());
+            grDesc.setText(gr.getDescription());
+            grPhoto.setText(gr.getPoster());
+            setImageGroup(gr.getPoster());
+            albList = gr.getAlbums().stream().collect(Collectors.toList());
+        }
+        albCurrent = null;
+        bindAlbum(albCurrent);
+        updateAlbumTable();
+
+    }
+
+    // обновим таблицу
+    private void updateAlbumTable() {
+        albCurrent = null;
+        albModel.update(albList);
+        albModel.fireTableDataChanged();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                tAlbum.repaint();
+            }
+        });
+        bindAlbum(albCurrent);
+
+    }
+    
+    // обновим таблицу
+    private void updateSongTable() {
+        songCurrent = null;
+        songModel.update(songList);
+        songModel.fireTableDataChanged();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                tSong.repaint();
+            }
+        });
+        bindSong(songCurrent);
+
+    }
+
+    // выводим постер 
+    private void setImage(String fileName, JLabel label) {
+        Dimension dst = new Dimension(400, 400);
+        if (fileName != null && !fileName.isEmpty()) {
+
+            try {
+                File file = new File(fileName);
+                BufferedImage img = ImageIO.read(file.toURI().toURL());//.getScaledInstance(w, h, Image.SCALE_DEFAULT);
+                Dimension src = getScaledDimension(new Dimension(img.getWidth(), img.getHeight()), dst);
+                label.setIcon(new ImageIcon(img.getScaledInstance((int) src.getWidth(), (int) src.getHeight(), Image.SCALE_SMOOTH)));
+                label.setText(fileName);
+                //grPhoto.setText("");
+            } catch (MalformedURLException ex) {
+                label.setIcon(null);
+                label.setText("");
+            } catch (IOException ex) {
+                label.setIcon(null);
+                label.setText("");
+            }
+
+        } else {
+            label.setIcon(null);
+            label.setText("");
+
+        }
+    }
+
+    // обновим постер группы
+    private void setImageGroup(String fileName) {
+        setImage(fileName, grPhoto);
+    }
+
+    // обновим постер альбома
+    private void setImageAlbum(String fileName) {
+        setImage(fileName, albPhoto);
+    }
+
+    private GroupMusicModel grModel;
+    private AlbumModel albModel;
+    private SongModel songModel;
+    private GanresModel ganreModel;
+    List<GroupMusic> grList;
+    List<Album> albList;
+    List<Song> songList;
+    GroupMusic grCurrent;
+    Album albCurrent;
+    Song songCurrent;
+
+    private int grPage = 0;
+    private int onPage = 50;
+
+    private  static Dimension getScaledDimension(Dimension imgSize, Dimension boundary) {
+
+        int original_width = imgSize.width;
+        int original_height = imgSize.height;
+        int bound_width = boundary.width;
+        int bound_height = boundary.height;
+        int new_width = original_width;
+        int new_height = original_height;
+
+        new_width = bound_width;
+        new_height = (new_width * original_height) / original_width;
+
+        if (new_height > bound_height) {
+            new_height = bound_height;
+            new_width = (new_height * original_width) / original_height;
+        }
+        return new Dimension(new_width, new_height);
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextPane albDesc;
+    private javax.swing.JTextField albName;
+    private javax.swing.JLabel albPhoto;
+    private javax.swing.JButton btDelAlbum;
+    private javax.swing.JButton btDelGroup;
+    private javax.swing.JButton btDelImage;
+    private javax.swing.JButton btDelImageAlb;
+    private javax.swing.JButton btDelImageAlb1;
+    private javax.swing.JButton btDelSong;
+    private javax.swing.JButton btLoadImageAlb;
+    private javax.swing.JButton btLoadImageAlb1;
+    private javax.swing.JButton btNewAlbum;
+    private javax.swing.JButton btNewGroup;
+    private javax.swing.JButton btNewSong;
+    private javax.swing.JButton btPlay;
+    private javax.swing.JButton btSaveAlbum;
+    private javax.swing.JButton btSaveGroup;
+    private javax.swing.JButton btSaveSong;
+    private javax.swing.JButton btStop;
+    private javax.swing.JButton btloadImage;
+    private javax.swing.JTextPane grDesc;
+    private javax.swing.JTextField grName;
+    private javax.swing.JButton grNext;
+    private javax.swing.JLabel grPageNum;
+    private javax.swing.JLabel grPhoto;
+    private javax.swing.JButton grPrev;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JPanel pAlbum;
+    private javax.swing.JPanel pGrInfo;
+    private javax.swing.JPanel pGrInfo1;
+    private javax.swing.JPanel pGrInfo2;
+    private javax.swing.JPanel pGrTable;
+    private javax.swing.JPanel pGrTable1;
+    private javax.swing.JPanel pGrTable2;
+    private javax.swing.JPanel pGroup;
+    private javax.swing.JPanel pPhotoButton;
+    private javax.swing.JPanel pPhotoButton1;
+    private javax.swing.JPanel pPhotoButton2;
+    private javax.swing.JPanel pPhotoGr;
+    private javax.swing.JPanel pPhotoGr1;
+    private javax.swing.JPanel pPhotoGr2;
+    private javax.swing.JPanel pSong;
+    private javax.swing.JLabel songFile;
+    private javax.swing.JComboBox<String> songGanre;
+    private javax.swing.JTextField songName;
+    private javax.swing.JTextField songYear;
+    public javax.swing.JTable tAlbum;
+    public javax.swing.JTable tGroup;
+    public javax.swing.JTable tSong;
+    // End of variables declaration//GEN-END:variables
+}
